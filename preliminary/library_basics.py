@@ -16,7 +16,9 @@ from pathlib import Path
 import cv2
 import numpy as np
 from PIL import Image
+import pytesseract
 
+pytesseract.pytesseract.tesseract_cmd = r"C:\Users\OBRIEM.TDM\source\repos\tesseract\tesseract.exe"
 
 VID_PATH = Path("../resources/oop.mp4")
 OUT_PATH = Path("../resources/images/")
@@ -70,7 +72,7 @@ class CodingVideo:
         """
 
         self.capture.set(cv2.CAP_PROP_POS_FRAMES, frame_number)
-        ok, frame_data = self.capture.read()
+        _, frame_data = self.capture.read()
 
         frame_data = cv2.cvtColor(frame_data, cv2.COLOR_BGR2RGB)
 
@@ -106,11 +108,20 @@ class CodingVideo:
         image = Image.fromarray(frame)
         image.save(output_path)
 
+    def get_text_from_frame(self, seconds: int) -> str:
+
+        frame = self.get_frame_number_at_time(seconds)
+
+        frame_data = self.get_frame_rgb_array(frame)
+
+        return pytesseract.image_to_string(frame_data)
+
 def test():
     """Try out your class here"""
     oop = CodingVideo("../resources/oop.mp4")
     print(oop)
     oop.save_as_image(42)
+    print(oop.get_text_from_frame(42))
 
 
 if __name__ == '__main__':
