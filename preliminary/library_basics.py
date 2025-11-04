@@ -53,7 +53,7 @@ class CodingVideo:
 
         return f"Total Frames: {int(self.frame_count)}, FPS: {round(self.fps)}, Duration(mm:ss): {formatted_duration}"
 
-    def get_frame_number_at_time(self, seconds: int) -> int:
+    def get_frame_number_at_time(self, seconds: int | float) -> int:
         """Given a time in seconds, returns the value of the nearest frame"""
         return round(seconds * self.fps)
 
@@ -78,7 +78,7 @@ class CodingVideo:
 
         return frame_data
 
-    def get_image_as_bytes(self, seconds: int) -> bytes:
+    def get_image_as_bytes(self, seconds: int | float) -> bytes:
         self.capture.set(cv2.CAP_PROP_POS_FRAMES, self.get_frame_number_at_time(seconds))
         ok, frame = self.capture.read()
         if not ok or frame is None:
@@ -89,10 +89,7 @@ class CodingVideo:
         return buf.tobytes()
 
     def save_as_image(self, seconds: int, output_path: Path | str = 'output.png') -> None:
-        """Saves the given frame as a png image
-
-        # TODO: Requires a third-party library to convert ndarray to png
-        # TODO: Identify the library and add a reference to its documentation
+        """Saves the given frame as a png image using pillow
 
         Reference
         ----------
