@@ -1,12 +1,3 @@
----
-name: Issue Template
-about: The standard format for issues in this repository
-title: ''
-labels: ''
-assignees: ''
-
----
-
 | issue  | about | labels | assignees |
 |--------|-------|--------|-----------|
 |        |       |        |           |
