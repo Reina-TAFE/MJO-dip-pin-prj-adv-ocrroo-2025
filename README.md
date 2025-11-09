@@ -1,5 +1,4 @@
-# Overview
-
+# Overview (WIP)
 Include a brief overview of the project, include:
 
 - How do you deploy and run the project?
@@ -55,3 +54,22 @@ curl 127.0.0.1:8000/[endpooint]
 ```
 `127.0.0.1:8000` may not work if you are running from a different port, you can check the terminal running the API.  
 for `endpoints` check [simple_api.py](./preliminary/simple_api.py)
+
+# How to Contribute
+
+## Issues
+When creating an issue, please use the provided template ([Issues](https://github.com/ST4T1K-VOID/MJO-dip-pin-prj-adv-ocrroo-2025/issues) > new issues > Issue Template), it should be the first option.  
+If, for whatever reason, the template is not available, a copy is provided [here](./docs/templates/issue-template.md).
+
+## Codebase Contributions
+
+if you find an issue you want to work on, please say so in comments of the issue.
+
+### Expected Workflow
+- fork this repo,
+  - [optional] create a branch (this is useful for being able to get any changes from the upstream repo (this one)),
+- work on your issue(s),
+- create a pull request (there is  template for this, if it is not appearing please grab the copy from [here](./docs/templates/pull_request_template.md),
+- wait for review, if needed implement requested changes.
+
+If you want, you can create a draft pull request, this will allow others to see your work before it is ready.
