@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>MJO-OCRROO</title>
+</head>
+<link rel="stylesheet" href="../static/temp.css">
+
+<body>
+
+<div>
+    <section id="video_section">
+        <p>video here</p>
+
+        <!--some sorta list type thing here-->
+        <!--for video details-->
+    </section>
+
+    <section id="buttons">
+
+<!--        <button>Select video</button>-->
+
+        <!--select-video>>get from api/videos>>popup list videos? tab navigable UI-->
+
+        <form action="/generate-transcript">
+            <label for="Video_pos">video position (seconds)</label>
+            <input id="Video_pos" name="video_pos" type="text"/>
+
+            <button type="submit">
+                generate transcript
+            </button>
+        </form>
+
+
+        <!--generate transcript>>get frame of video>>send to api/frame_ocr>>get text>>display in area-->
+    </section>
+
+    <section id="transcript_area">
+        {% if transcript %}
+        <p>{{ transcript }}</p>
+        {% else %}
+        <p>no transcript</p>
+        {% endif %}
+    </section>
+</div>
+
+
+</body>
+</html>
