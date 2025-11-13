@@ -10,3 +10,8 @@ wheels/
 .venv
 
 pylint_output.txt
+
+*/api/resources/
+*/front-end/static/resources/
+
+node_modules
