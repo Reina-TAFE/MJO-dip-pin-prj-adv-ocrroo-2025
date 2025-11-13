@@ -21,6 +21,8 @@ app = FastAPI()
 VIDEOS: dict[str, Path] = {
     "demo": Path("./resources/oop.mp4")
 }
+# dict structure: name / path
+# name: you refer to this (e.g. demo) in api endpoints
 
 
 class VideoMetaData(BaseModel):
@@ -50,6 +52,7 @@ def list_videos():
 
 
 def _open_vid_or_404(vid: str) -> CodingVideo:
+    """open a video from specified path if it is valid"""
     path = VIDEOS.get(vid)
     print(path)
     if not path or not path.is_file():
@@ -70,6 +73,7 @@ def _meta(video: CodingVideo) -> VideoMetaData:
 
 @app.get("/video/{vid}", response_model=VideoMetaData)
 def video(vid: str):
+    """get video metadata and length in seconds"""
     video = _open_vid_or_404(vid)
     try:
         meta = _meta(video)
@@ -84,6 +88,7 @@ def video(vid: str):
 
 @app.get("/video/{vid}/frame/{t}", response_class=Response)
 def video_frame(vid: str, t: float):
+    #get a video frame as bytes
     try:
         video = _open_vid_or_404(vid)
         return Response(content=video.get_image_as_bytes(t), media_type="image/png")
@@ -92,6 +97,7 @@ def video_frame(vid: str, t: float):
 
 
 @app.get("/video/{vid}/frame/{t}/ocr", response_class=Response)
+#get the text (ocr) from a video frame
 def frame_ocr(vid: str, t: int | float):
     try:
         video = _open_vid_or_404(vid)
