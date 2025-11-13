@@ -1,13 +1,9 @@
-| issue  | about | labels | assignees |
-|--------|-------|--------|-----------|
-|        |       |        |           |
-
 ## Issue Type
 replace `[]` with `[x]`
-- [] Bug report
-- [] Feature request
-- [] Documentation update
-- [] Other (please specify)
+- [ ] Bug report
+- [ ] Feature request
+- [ ] Documentation update
+- [ ] Other (please specify)
 
 ## Description
 
