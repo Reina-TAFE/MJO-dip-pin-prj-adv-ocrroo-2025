@@ -6,47 +6,60 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>MJO-OCRROO</title>
+
+    <link rel="stylesheet" href="{{url_for('static',filename='dist/output.css')}}">
+    <!-- TODO: run this when changing styling:
+     npx @tailwindcss/cli -i ./static/src/input.css -o ./static/dist/output.css --watch
+     -->
+
 </head>
-<link rel="stylesheet" href="../static/temp.css">
+<body class="bg-gray-300 m-12 mt-0">
+<article class="bg-gray-200 px-4 pt-16 pb-12">
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-5">
+        <div class="rounded md:col-span-2">
+            <video controls id="Video" class="rounded-md">
+                <source src="./../static/resources/oop.mp4" type="video/mp4">
+            </video>
+        </div>
 
-<body>
+        <div class="rounded p-6 ">
+            <form action="/generate-transcript" class="flex flex-col"
+                  method="POST">
+                <button type="submit"
+                        class="bg-white p-6 lg:p-10 rounded-lg
+                        focus:bg-zinc-400 hover:bg-gray-400
+                        ease-in-out transition-colors duration-250
+                        flex text-sm font-medium justify-center
+                        shadow-md">
+                    generate transcript
+                </button>
 
-<div>
-    <section id="video_section">
-        <p>video here</p>
+                <input type="hidden" name="video_pos" id="Video_pos" value="0">
 
-        <!--some sorta list type thing here-->
-        <!--for video details-->
-    </section>
+                <script>
+                    video = document.getElementById('Video');
+                    output = document.getElementById('Video_pos')
+                    video.ontimeupdate = () => {
+                        let pos = parseInt(video.currentTime)
+                        console.log(pos);
+                        output.value =  pos;
+                    }
+                </script>
+            </form>
 
-    <section id="buttons">
+            <!-- more buttons here! -->
+        </div>
 
-<!--        <button>Select video</button>-->
+        <div class="rounded md:col-span-2 bg-white text-left">
+            {% if transcript %}
+            <p class="m-2 whitespace-pre-wrap" >{{ transcript }}</p>
+            {% else %}
+            <p class="m-2, text-center" >no transcript</p>
+            {% endif %}
+        </div>
 
-        <!--select-video>>get from api/videos>>popup list videos? tab navigable UI-->
-
-        <form action="/generate-transcript">
-            <label for="Video_pos">video position (seconds)</label>
-            <input id="Video_pos" name="video_pos" type="text"/>
-
-            <button type="submit">
-                generate transcript
-            </button>
-        </form>
-
-
-        <!--generate transcript>>get frame of video>>send to api/frame_ocr>>get text>>display in area-->
-    </section>
-
-    <section id="transcript_area">
-        {% if transcript %}
-        <p>{{ transcript }}</p>
-        {% else %}
-        <p>no transcript</p>
-        {% endif %}
-    </section>
-</div>
-
+    </div>
+</article>
 
 </body>
 </html>
