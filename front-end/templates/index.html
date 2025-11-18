@@ -18,7 +18,7 @@
     <div class="grid grid-cols-1 gap-4 md:grid-cols-5">
         <div class="rounded md:col-span-2">
             <video controls id="Video" class="rounded-md">
-                <source src="./../static/resources/oop.mp4" type="video/mp4">
+                <source src="../static/media/oop.mp4" type="video/mp4">
             </video>
         </div>
 
@@ -42,7 +42,7 @@
                     video.ontimeupdate = () => {
                         let pos = parseInt(video.currentTime)
                         console.log(pos);
-                        output.value =  pos;
+                        output.value = pos;
                     }
                 </script>
             </form>
@@ -50,14 +50,15 @@
             <!-- more buttons here! -->
         </div>
 
-        <div class="rounded md:col-span-2 bg-white text-left">
-            {% if transcript %}
-            <p class="m-2 whitespace-pre-wrap" >{{ transcript }}</p>
-            {% else %}
-            <p class="m-2, text-center" >no transcript</p>
-            {% endif %}
+        <div class="rounded md:col-span-2 text-left m-2">
+            <label for="TranscriptArea">Transcript:</label>
+            <textarea name="transcriptArea" id="TranscriptArea"
+                      class="p-2 rounded whitespace-pre-wrap w-full text-left bg-white"
+                      rows="8"
+                      readonly>{% if transcript %}{{ transcript }}{% else %}No transcript available{% endif %}
+            </textarea>
+            <!-- if/else is compressed to prevent unnecessary whitespace -->
         </div>
-
     </div>
 </article>
 
