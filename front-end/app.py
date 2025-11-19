@@ -3,12 +3,16 @@ import requests
 from flask import Flask
 from flask import render_template, redirect
 from flask import request, url_for, session
-
+from services.bookmark_manager import BookmarkManager, Bookmark
 import json
 
 app = Flask(__name__)
 app.secret_key = "very_secret_key"
 # NOTE: flask run --port 8001 --debug
+
+# Bookmark format: { id: timestamp(seconds) }
+BOOKMARK_DB_PATH = './resources/bookmarks.db'
+bookmark_manager = None
 
 @app.route("/")
 def index():
@@ -24,6 +28,7 @@ def index():
 
 @app.route("/login", methods=["POST"])
 def login():
+    global bookmark_manager, BOOKMARK_DB_PATH
     video_id = request.form.get('video')
     user = request.form.get('username')
 
@@ -31,7 +36,7 @@ def login():
 
     session['video'] = {'video_id': video_id, 'frontend_path': path}
     session['user'] = user
-
+    bookmark_manager = Bookmark(BOOKMARK_DB_PATH, user)
     print(video_id, user)
 
     #try get user bookmarks for video
@@ -40,8 +45,10 @@ def login():
 
 @app.route("/video")
 def video():
+    global bookmark_manager
     transcript = request.args.get("transcript")
     current_time = request.args.get("current_time")
+    bookmarks = bookmark_manager.load_bookmarks(session['video']['video_id'])
     print(transcript)
 
     if transcript:
@@ -65,3 +72,16 @@ def get_transcript():
     response = response.decode(encoding='utf-8')
 
     return redirect(url_for('video', current_time=video_position, transcript=response))
+
+
+@app.route("/load-bookmark/<int:bookmark_id>", methods=["POST"])
+def load_bookmark(bookmark_id):
+    """Loads the timestamp associated with the bookmark"""
+    global bookmark_manager
+    bookmark = bookmark_manager.get_bookmark(bookmark_id)
+    transcript = request.args.get("transcript")
+    if transcript:
+        return redirect(url_for("video", current_time=bookmark, transcript=transcript))
+    else:
+        return redirect(url_for("video", current_time=bookmark))
+
