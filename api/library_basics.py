@@ -18,7 +18,11 @@ import numpy as np
 from PIL import Image
 import pytesseract
 
-pytesseract.pytesseract.tesseract_cmd = r"C:\Users\ROWLAR\AppData\Local\Programs\Tesseract-OCR\tesseract.exe"
+import os
+tess_path = r"C:\Program Files\Tesseract-OCR\tesseract.exe" if \
+    os.path.exists(r"C:\Program Files\Tesseract-OCR/tesseract.exe") else False
+pytesseract.pytesseract.tesseract_cmd = r"C:\Users\ROWLAR\AppData\Local\Programs\Tesseract-OCR\tesseract.exe" if \
+    not tess_path else tess_path
 
 VID_PATH = Path("media/oop.mp4")
 OUT_PATH = Path("media/images/")
