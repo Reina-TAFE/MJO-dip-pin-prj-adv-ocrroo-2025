@@ -32,11 +32,10 @@
                 <source src="../static/media/oop.mp4" type="video/mp4">
             </video>
             <script>
-                function SetCurrentTime() {
+                window.onload = () => {
                     let player = document.getElementById("Video")
                     player.currentTime = parseInt(document.getElementById('Video_pos').value)
-                }
-                window.onload = SetCurrentTime;
+                };
             </script>
         </div>
 
