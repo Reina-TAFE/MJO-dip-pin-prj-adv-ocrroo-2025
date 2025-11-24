@@ -3,7 +3,7 @@ import requests
 from flask import Flask
 from flask import render_template, redirect
 from flask import request, url_for, session
-from services.bookmark_manager import BookmarkManager, Bookmark
+from . import BookmarkManager, Bookmark
 import json
 
 app = Flask(__name__)
@@ -48,7 +48,7 @@ def video():
     global bookmark_manager
     transcript = request.args.get("transcript")
     current_time = request.args.get("current_time")
-    bookmarks = bookmark_manager.load_bookmarks(session['video']['video_id'])
+    bookmarks = bookmark_manager.load_bookmarks_for_video(session['video']['video_id'])
     print(transcript)
 
     if transcript:

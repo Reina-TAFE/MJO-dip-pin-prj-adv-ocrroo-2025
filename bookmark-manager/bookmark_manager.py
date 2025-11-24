@@ -2,7 +2,7 @@ import sqlite3
 
 
 class Bookmark:
-    def __init__(self, id: int, user: str, video_id: str, timestamp: int, title: string):
+    def __init__(self, id: int, user: str, video_id: str, timestamp: int, title: str):
         self.id = id
         self.user = user
         self.video_id = video_id
@@ -11,7 +11,7 @@ class Bookmark:
 
 
 class BookmarkManager:
-    def __init__(self, db_path: Path, user: Str):
+    def __init__(self, db_path: Path, user: str):
         self.path = db_path
         self.user = user
         self.conn = sqlite3.connect(db_path)
@@ -38,7 +38,7 @@ class BookmarkManager:
                             "user_id TEXT, "
                             "video_id TEXT)")
 
-    def load_bookmarks(self, video_id: String) -> List(Bookmark):
+    def load_bookmarks_for_video(self, video_id: str) -> list(Bookmark):
         self.cursor.execute(f"SELECT * FROM bookmarks WHERE video_id = ?{video_id} AND user_id = {self.user}")
         bookmarks_data = self.cursor.fetchall()
         bookmarks = [Bookmark(id, user, video, time, title) for id, user, video, time, title in bookmarks_data]
