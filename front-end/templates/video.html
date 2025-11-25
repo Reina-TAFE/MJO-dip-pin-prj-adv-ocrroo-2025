@@ -30,12 +30,19 @@
                <!-- TODO: test with different videos -->
                 <source src="../static/media/{{ video }}.mp4" type="video/mp4">
             </video>
+            <script>
+                window.onload = () => {
+                    let player = document.getElementById("Video")
+                    player.currentTime = parseInt(document.getElementById('Video_pos').value)
+                };
+            </script>
         </div>
 
         <div class="rounded p-6 ">
             <form action="/generate-transcript" class="flex flex-col"
                   method="POST">
-                <button type="submit"
+                <button id="submit_button"
+                        type="submit"
                         class="bg-white p-6 lg:p-10 rounded-lg
                         focus:bg-zinc-400 hover:bg-gray-400
                         ease-in-out transition-colors duration-250
@@ -44,7 +51,8 @@
                     generate transcript
                 </button>
 
-                <input type="hidden" name="video_pos" id="Video_pos" value="0">
+
+                <input type="hidden" name="video_pos" id="Video_pos" value="{{current_time}}">
 
                 <script>
                     video = document.getElementById('Video');

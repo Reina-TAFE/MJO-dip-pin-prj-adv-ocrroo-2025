@@ -53,14 +53,19 @@ def video():
     """
     transcript = request.args.get("transcript")
     video_path = session.get('video')
-
-    print(video_path)
+    current_time = request.args.get("current_time")
+    print(transcript)
 
     if transcript:
-        return render_template("video.html", transcript=transcript, video=video_path)
-
-    return render_template("video.html", video=video_path)
-
+        if current_time:
+            return render_template("video.html", current_time=current_time, transcript=transcript, video=video_path)
+        else:
+            return render_template("video.html", transcript=transcript, video=video_path)
+    else:
+        if current_time:
+            return render_template("video.html", current_time=current_time, video=video_path)
+        else:
+            return render_template("video.html", video=video_path)
 
 @app.route("/generate-transcript", methods=["POST"])
 def get_transcript():
@@ -75,4 +80,4 @@ def get_transcript():
 
     response = response.decode(encoding='utf-8')
 
-    return redirect(url_for('video', transcript=response))
+    return redirect(url_for('video', current_time=video_position, transcript=response))
