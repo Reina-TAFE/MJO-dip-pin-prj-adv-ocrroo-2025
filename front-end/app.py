@@ -4,14 +4,15 @@ from flask import Flask
 from flask import render_template, redirect
 from flask import request, url_for, session
 
-import json
 
 app = Flask(__name__)
 app.secret_key = "very_secret_key"
+
 # NOTE: flask run --port 8001 --debug
 
 @app.route("/")
 def index():
+    """gets a list of videos from the api and loads the indexs/login page"""
 
     videos = requests.get("http://127.0.0.1:8000/video").json()
 
@@ -22,41 +23,56 @@ def index():
 
     return render_template("index.html", videos=videos['videos'])
 
+
 @app.route("/login", methods=["POST"])
 def login():
+    """
+    gets the username and selected video entered by the user,
+    enters video id and path, and the user's name to the session.
+    """
     video_id = request.form.get('video')
     user = request.form.get('username')
 
     path = f"front-end/static/media/{video_id}.mp4"
 
-    session['video'] = {'video_id': video_id, 'frontend_path': path}
+    session['video'] = video_id
     session['user'] = user
 
     print(video_id, user)
 
-    #try get user bookmarks for video
+    # try get user bookmarks for video
 
     return redirect(url_for("video"))
 
+
 @app.route("/video")
 def video():
+    """
+    (TODO: loads the stored (in the session) video)
+    and a sends a transcript to the template if possible
+    """
     transcript = request.args.get("transcript")
+    video_path = session.get('video')
     current_time = request.args.get("current_time")
     print(transcript)
 
     if transcript:
         if current_time:
-            return render_template("video.html", current_time=current_time, transcript=transcript)
+            return render_template("video.html", current_time=current_time, transcript=transcript, video=video_path)
         else:
-            return render_template("video.html", transcript=transcript)
+            return render_template("video.html", transcript=transcript, video=video_path)
     else:
         if current_time:
-            return render_template("video.html", current_time=current_time)
+            return render_template("video.html", current_time=current_time, video=video_path)
         else:
-            return render_template("video.html")
+            return render_template("video.html", video=video_path)
 
 @app.route("/generate-transcript", methods=["POST"])
 def get_transcript():
+    """
+    get the ocr for a given time (in seconds) from the API
+    redirect to /video with the transcript
+    """
     video_position = request.form['video_pos']
 
     url = f"http://127.0.0.1:8000/video/OOP/frame/{video_position}/ocr"
