@@ -3,7 +3,7 @@ import requests
 from flask import Flask
 from flask import render_template, redirect
 from flask import request, url_for, session
-from .bookmark_utils import BookmarkManager, Bookmark
+from .bookmark_utils import BookmarkManager
 import json
 
 app = Flask(__name__)
@@ -13,7 +13,6 @@ app.secret_key = "very_secret_key"
 
 # Bookmark format: { id: timestamp(seconds) }
 BOOKMARK_DB_PATH = './bookmark_utils/resources/bookmarks.db'
-bookmark_manager = None
 
 @app.route("/")
 def index():
@@ -41,20 +40,20 @@ def login():
     video_id = request.form.get('video')
     user = request.form.get('username')
 
-    path = f"front-end/static/media/{video_id}.mp4"
-
     session['video'] = video_id
     session['user'] = user
+
     bookmark_manager = BookmarkManager(BOOKMARK_DB_PATH, user)
     tables = bookmark_manager.get_tables()
     # check if database has been populated with tables
     if len(tables) == 0:
         bookmark_manager.create_bookmarks_db()
     # if user not in database, add them
-    bookmark_manager.check_existing_user()
+    print(bookmark_manager.check_user_in_db())
+
     # if video not in database, add it
-    bookmark_manager.check_video_in_db(video_id)
-    print(video_id, user)
+    # bookmark_manager.check_video_in_db(video_id)
+    # bookmark_manager.conn.close()
 
     return redirect(url_for("video"))
 
@@ -66,13 +65,15 @@ def video():
     and a sends a transcript to the template if possible
     """
     global bookmark_manager
-    
+    bookmark_manager = BookmarkManager(BOOKMARK_DB_PATH, session['user'])
+
     transcript = request.args.get("transcript")
     current_time = request.args.get("current_time")
-
     video_path = session.get('video')
-    bookmarks = bookmark_manager.load_bookmarks_for_video(session['video']['video_id'])
-    print(transcript)
+
+    bookmarks = bookmark_manager.load_bookmarks_for_video(session['video'])
+
+    bookmark_manager.conn.close()
 
     if bookmarks:
         if transcript:
@@ -119,17 +120,26 @@ def get_transcript():
 @app.route("/load-bookmark", methods=["POST"])
 def load_bookmark():
     """Loads the timestamp associated with the bookmark"""
+
     global bookmark_manager
     bookmark_id = request.form['bookmark_id']
     bookmark = bookmark_manager.get_bookmark(bookmark_id)
+
+    bookmark_manager.conn.close()
+
     return redirect(url_for("video", current_time=bookmark['time']))
 
 
 @app.route("/add-bookmark", methods=["POST"])
 def add_bookmark():
-    global bookmark_manager
+
     time = request.form['bookmark_pos']
     title = request.form['bookmark_title']
-    video_id = session['video']['video_id']
+    video_id = session['video']
+
+    bookmark_manager = BookmarkManager(BOOKMARK_DB_PATH, session['user'])
     bookmark_manager.add_bookmark(video_id, time, title)
+
+    bookmark_manager.conn.close()
+
     return redirect(url_for("video", current_time=time))
